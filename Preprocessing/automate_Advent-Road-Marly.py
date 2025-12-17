@@ -1,5 +1,6 @@
 import pandas as pd
 import re
+import os
 import string
 import nltk
 from nltk.tokenize import word_tokenize
@@ -82,3 +83,13 @@ def preprocess_imdb(data, embedding_size=100, window=5, min_count=2, sg=1):
     df['embedding'] = compute_embedding(df['lemmatized'], w2v_model)
     
     return df[['review', 'clean_review', 'lemmatized', 'sentiment', 'sentiment_label', 'embedding']], w2v_model
+    
+input_csv = "IMDB_raw/IMDB_raw.csv"
+output_folder = "Preprocessing"
+os.makedirs(output_folder, exist_ok=True)
+
+df_processed, _ = preprocess_imdb(input_csv)
+
+csv_path = os.path.join(output_folder, "IMDB_preprocessing.csv")
+df_processed.to_csv(csv_path, index=False)
+print(f"CSV hasil preprocess tersimpan di: {csv_path}")
