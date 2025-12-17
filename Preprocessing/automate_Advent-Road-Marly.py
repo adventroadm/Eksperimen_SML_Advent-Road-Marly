@@ -1,4 +1,5 @@
 import pandas as pd
+import os
 import re
 import string
 import nltk
@@ -82,3 +83,19 @@ def preprocess_imdb(data, embedding_size=100, window=5, min_count=2, sg=1):
     df['embedding'] = compute_embedding(df['lemmatized'], w2v_model)
     
     return df[['review', 'clean_review', 'lemmatized', 'sentiment', 'sentiment_label', 'embedding']], w2v_model
+
+if __name__ == "__main__":
+    # Input CSV
+    input_csv = "IMDB_raw/IMDB_raw.csv"
+    
+    # Folder output
+    output_folder = "Preprocessing"
+    os.makedirs(output_folder, exist_ok=True)
+    
+    # Jalankan preprocessing
+    df_processed = preprocess_imdb(input_csv)
+    
+    # Simpan CSV hasil preprocess
+    csv_path = os.path.join(output_folder, "IMDB_preprocessing.csv")
+    df_processed.to_csv(csv_path, index=False)
+    print(f"CSV hasil preprocess tersimpan di: {csv_path}")
