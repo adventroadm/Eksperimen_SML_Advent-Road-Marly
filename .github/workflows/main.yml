@@ -37,11 +37,11 @@ jobs:
 
       # Jalankan preprocessing otomatis
       - name: Run preprocessing script
-        run: python preprocessing/automate_Advent-Road-Marly.py
+        run: python Preprocessing/automate_Advent-Road-Marly.py
 
       # Upload hasil preprocess sebagai artifact
       - name: Upload processed dataset
         uses: actions/upload-artifact@v4
         with:
           name: IMDB_preprocessing
-          path: "preprocessing/IMDB_preprocessing.csv"
+          path: "Preprocessing/IMDB_preprocessing.csv"
