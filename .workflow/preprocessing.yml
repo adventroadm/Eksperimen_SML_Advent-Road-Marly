@@ -31,7 +31,7 @@ jobs:
         import pandas as pd
         from preprocessing.automate_Advent-Road-Marly import preprocess_imdb
 
-        df_processed = preprocess_imdb("IMDB_raw.csv")
+        df_processed = preprocess_imdb("IMDB_raw/IMDB_raw.csv")
         df_processed.to_csv("preprocessing/IMDB_preprocessing.csv", index=False)
         print("Preprocessing selesai")
         EOF
