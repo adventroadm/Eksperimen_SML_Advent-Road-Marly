@@ -4,9 +4,6 @@ on:
   push:
     branches:
       - main
-    paths:
-      - "IMDB_raw/IMDB_raw.csv"
-      - "Preprocessing/automate_Advent-Road-Marly.py"
 
 jobs:
   preprocess:
