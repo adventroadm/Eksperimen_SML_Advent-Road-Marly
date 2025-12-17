@@ -1,0 +1,47 @@
+name: Run Preprocessing Automatically
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "IMDB_raw/IMDB_raw.csv"
+      - "preprocessing/automate_Advent-Road-Marly.py"
+
+jobs:
+  preprocess:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout repository
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Setup Python
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # Install dependencies
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pandas numpy matplotlib seaborn scikit-learn scipy nltk gensim
+
+      - name: Download NLTK data
+        run: |
+          python -m nltk.downloader punkt stopwords wordnet omw-1.4
+          
+      # Jalankan preprocessing otomatis
+      - name: Run preprocessing script
+        run: |
+          python preprocessing/automate_Advent-Road-Marly.py
+
+      # Upload hasil preprocess sebagai artifact
+      - name: Upload processed dataset
+        uses: actions/upload-artifact@v4
+        with:
+          name: IMDB_preprocessing
+          path: "preprocessing/IMDB_preprocessing.csv"
