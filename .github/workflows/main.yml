@@ -1,10 +1,12 @@
 name: Run Preprocessing Automatically
 
-# Trigger otomatis saat push ke main
 on:
   push:
     branches:
       - main
+    paths:
+      - "IMDB_raw/IMDB_raw.csv"
+      - "Preprocessing/automate_Advent-Road-Marly.py"
 
 jobs:
   preprocess:
@@ -12,19 +14,30 @@ jobs:
 
     steps:
       # Checkout repository
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      # Setup Python
+      # Setup Python 3.11
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12.7"
-          
-      - name: Install dependencies
-        run: pip install pandas numpy scikit-learn nltk gensim
 
+      # Install dependencies
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pandas numpy scikit-learn nltk gensim
+
+      # Download NLTK data (untuk tokenisasi + lemmatization)
+      - name: Download NLTK data
+        run: |
+          python -m nltk.downloader punkt stopwords wordnet omw-1.4
+
+      # Jalankan preprocessing script
       - name: Run preprocessing script
-        run: python Preprocessing/automate_Advent-Road-Marly.py
+        run: |
+          python Preprocessing/automate_Advent-Road-Marly.py
 
       # Upload hasil preprocess sebagai artifact
       - name: Upload processed dataset
