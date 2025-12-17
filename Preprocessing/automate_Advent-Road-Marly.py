@@ -2,7 +2,6 @@ import pandas as pd
 import os
 import re
 import string
-import nltk
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
@@ -10,11 +9,11 @@ from sklearn.preprocessing import LabelEncoder
 from gensim.models import Word2Vec
 import numpy as np
 
-# Pastikan resource nltk sudah di-download
-nltk.download('punkt')
-nltk.download('wordnet')
-nltk.download('omw-1.4')
-nltk.download('stopwords')
+import nltk
+nltk.download('punkt', quiet=True)
+nltk.download('stopwords', quiet=True)
+nltk.download('wordnet', quiet=True)
+nltk.download('omw-1.4', quiet=True))
 
 # Inisialisasi Lemmatizer dan Stopwords
 lemmatizer = WordNetLemmatizer()
