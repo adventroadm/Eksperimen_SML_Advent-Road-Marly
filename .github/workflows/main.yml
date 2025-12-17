@@ -29,15 +29,12 @@ jobs:
       # Download NLTK data
       - name: Download NLTK data
         run: |
-          python -m nltk.downloader punkt stopwords wordnet omw-1.4
+          python -m nltk.downloader -d ~/nltk_data punkt stopwords wordnet omw-1.4
 
-      # Debug: list files
-      - name: List files
-        run: ls -R
-
-      # Jalankan preprocessing otomatis
       - name: Run preprocessing script
-        run: python Preprocessing/automate_Advent-Road-Marly.py
+        run: |
+          python -c "import nltk; nltk.data.path.append('/home/runner/nltk_data'); exec(open('Preprocessing/automate_Advent-Road-Marly.py').read())"
+
 
       # Upload hasil preprocess sebagai artifact
       - name: Upload processed dataset
