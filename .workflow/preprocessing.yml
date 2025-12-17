@@ -1,0 +1,45 @@
+name: Preprocessing Dataset
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  preprocess:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        python -m nltk.downloader punkt wordnet omw-1.4 stopwords
+
+    - name: Run preprocessing
+      run: |
+        python - <<EOF
+        import pandas as pd
+        from preprocessing.automate_AdventRoad import preprocess_imdb
+
+        df_processed = preprocess_imdb("IMDB_raw/IMDB Dataset.csv")
+        df_processed.to_csv("preprocessing/IMDB_preprocessed/processed_data.csv", index=False)
+        print("Preprocessing selesai, dataset tersimpan di preprocessing/IMDB_preprocessed/processed_data.csv")
+        EOF
+
+    - name: Commit and push processed data
+      run: |
+        git config --global user.name "github-actions"
+        git config --global user.email "actions@github.com"
+        git add preprocessing/IMDB_preprocessed/processed_data.csv
+        git commit -m "Update processed dataset [GitHub Actions]" || echo "No changes to commit"
+        git push
