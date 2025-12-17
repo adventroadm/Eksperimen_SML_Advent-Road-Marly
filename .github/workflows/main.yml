@@ -1,5 +1,6 @@
 name: Run Preprocessing Automatically
 
+# Trigger otomatis saat push ke main
 on:
   push:
     branches:
@@ -13,28 +14,35 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Checkout repository
       - uses: actions/checkout@v4
 
+      # Setup Python
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
+      # Install dependencies
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install pandas numpy matplotlib seaborn scikit-learn scipy nltk gensim
 
+      # Download NLTK data
       - name: Download NLTK data
         run: |
           python -m nltk.downloader punkt stopwords wordnet omw-1.4
 
-      - name: List files for debugging
+      # Debug: list files
+      - name: List files
         run: ls -R
 
+      # Jalankan preprocessing otomatis
       - name: Run preprocessing script
         run: python preprocessing/automate_Advent-Road-Marly.py
 
+      # Upload hasil preprocess sebagai artifact
       - name: Upload processed dataset
         uses: actions/upload-artifact@v4
         with:
