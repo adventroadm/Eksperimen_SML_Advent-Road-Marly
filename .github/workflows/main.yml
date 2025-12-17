@@ -1,7 +1,6 @@
 name: Run Preprocessing Automatically
 
 on:
-  workflow_dispatch:
   push:
     branches:
       - main
