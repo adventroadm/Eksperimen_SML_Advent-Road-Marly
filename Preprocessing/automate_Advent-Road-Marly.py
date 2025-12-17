@@ -3,15 +3,13 @@ import re
 import os
 import string
 import nltk
-from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 from sklearn.preprocessing import LabelEncoder
 from gensim.models import Word2Vec
 import numpy as np
 
-# Pastikan resource nltk sudah di-download
-nltk.download('punkt')
+# Download resource NLTK untuk stopwords dan lemmatizer
 nltk.download('wordnet')
 nltk.download('omw-1.4')
 nltk.download('stopwords')
@@ -21,13 +19,17 @@ lemmatizer = WordNetLemmatizer()
 stop_words = set(stopwords.words('english'))
 
 def clean_text(text):
-    """Membersihkan teks: lowercase, hapus HTML, tanda baca, angka, spasi berlebih."""
+    """Lowercase, hapus HTML, tanda baca, angka, spasi berlebih."""
     text = text.lower()
-    text = re.sub(r"<.*?>", " ", text)  # hapus HTML tags
-    text = text.translate(str.maketrans("", "", string.punctuation))  # hapus tanda baca
-    text = re.sub(r"\d+", "", text)  # hapus angka
-    text = re.sub(r"\s+", " ", text).strip()  # hapus spasi berlebih
+    text = re.sub(r"<.*?>", " ", text)
+    text = text.translate(str.maketrans("", "", string.punctuation))
+    text = re.sub(r"\d+", "", text)
+    text = re.sub(r"\s+", " ", text).strip()
     return text
+
+def simple_tokenize(text):
+    """Tokenisasi sederhana tanpa NLTK punkt."""
+    return text.split()
 
 def lemmatize_tokens(tokens):
     """Lemmatization dan hapus stopwords."""
@@ -58,8 +60,8 @@ def preprocess_imdb(data, embedding_size=100, window=5, min_count=2, sg=1):
     # Cleaning teks
     df['clean_review'] = df['review'].apply(clean_text)
     
-    # Tokenisasi
-    df['tokens'] = df['clean_review'].apply(word_tokenize)
+    # Tokenisasi sederhana
+    df['tokens'] = df['clean_review'].apply(simple_tokenize)
     
     # Lemmatization + hapus stopwords
     df['lemmatized'] = df['tokens'].apply(lemmatize_tokens)
@@ -82,13 +84,14 @@ def preprocess_imdb(data, embedding_size=100, window=5, min_count=2, sg=1):
     # Hitung embedding rata-rata per review
     df['embedding'] = compute_embedding(df['lemmatized'], w2v_model)
     
-    return df[['review', 'clean_review', 'lemmatized', 'sentiment', 'sentiment_label', 'embedding']], w2v_model
-    
+    return df[['review', 'clean_review', 'lemmatized', 'sentiment', 'sentiment_label', 'embedding']]
+
+# Jalankan preprocessing dan simpan CSV
 input_csv = "IMDB_raw/IMDB_raw.csv"
 output_folder = "Preprocessing"
 os.makedirs(output_folder, exist_ok=True)
 
-df_processed, _ = preprocess_imdb(input_csv)
+df_processed = preprocess_imdb(input_csv)
 
 csv_path = os.path.join(output_folder, "IMDB_preprocessing.csv")
 df_processed.to_csv(csv_path, index=False)
