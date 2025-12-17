@@ -29,17 +29,17 @@ jobs:
       run: |
         python - <<EOF
         import pandas as pd
-        from preprocessing.automate_AdventRoad import preprocess_imdb
+        from preprocessing.automate_Advent-Road-Marly import preprocess_imdb
 
-        df_processed = preprocess_imdb("IMDB_raw/IMDB Dataset.csv")
-        df_processed.to_csv("preprocessing/IMDB_preprocessed/processed_data.csv", index=False)
-        print("Preprocessing selesai, dataset tersimpan di preprocessing/IMDB_preprocessed/processed_data.csv")
+        df_processed = preprocess_imdb("IMDB_raw.csv")
+        df_processed.to_csv("preprocessing/IMDB_preprocessing.csv", index=False)
+        print("Preprocessing selesai")
         EOF
 
     - name: Commit and push processed data
       run: |
         git config --global user.name "github-actions"
         git config --global user.email "actions@github.com"
-        git add preprocessing/IMDB_preprocessed/processed_data.csv
+        git add preprocessing/IMDB_preprocessing.csv
         git commit -m "Update processed dataset [GitHub Actions]" || echo "No changes to commit"
         git push
